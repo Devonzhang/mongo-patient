@@ -1,4 +1,4 @@
-package com.example.MongoPractice
+package com.example.patient
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
