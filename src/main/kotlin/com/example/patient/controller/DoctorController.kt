@@ -50,7 +50,7 @@ class DoctorController(
         val doctor = doctorRepository.findOneById(id)
         try {
             doctor!!
-        }catch (nullPointerException: NullPointerException){
+        } catch (nullPointerException: NullPointerException) {
             throw IdNotFoundException("No patient with id $id")
         }
         return ResponseEntity.ok(doctor)
