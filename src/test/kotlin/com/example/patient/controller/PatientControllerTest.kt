@@ -114,11 +114,25 @@ internal class PatientControllerTest {
     }
 
     @Test
-    fun `should fail to create a patient without name`(){
+    fun `should fail to create a patient without name`() {
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/patients"))
+            MockMvcRequestBuilders.post("/patients")
+        )
             .andExpect(MockMvcResultMatchers.status().isBadRequest)
             .andExpect { MockMvcResultMatchers.content().string("Invalid Name!") }
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/patients")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
+                    {
+                        "name":"  ",
+                        "description":""
+                    }
+                """.trimIndent()
+                )
+        )
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect { MockMvcResultMatchers.jsonPath("$.description").value("Invalid Name!") }
     }
-
 }

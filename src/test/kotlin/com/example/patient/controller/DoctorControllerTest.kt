@@ -15,7 +15,8 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.util.*
 
 @WebMvcTest(controllers = [DoctorController::class])
@@ -99,12 +100,25 @@ internal class DoctorControllerTest() {
     }
 
     @Test
-    fun `should fail to create a doctor without name`() {
+    fun `should fail to create a doctor without name or name is empty`() {
         mockMvc.perform(
             MockMvcRequestBuilders.post("/doctors")
         )
             .andExpect(status().isBadRequest)
-            .andExpect { content().string("Invalid Name!") }
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/doctors")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
+                    {
+                        "name":"  ",
+                        "description":""
+                    }
+                """.trimIndent()
+                )
+        )
+            .andExpect(status().isBadRequest)
+            .andExpect { jsonPath("$.description").value("Invalid Name!") }
     }
 
 
