@@ -3,7 +3,7 @@ package com.example.patient.controller
 import com.example.patient.dto.DoctorRequestDTO
 import com.example.patient.entity.Doctor
 import com.example.patient.exception.GlobalErrorResponse
-import com.example.patient.exception.IdNotFoundException
+import com.example.patient.exception.PersonNotFoundException
 import com.example.patient.exception.InvalidNameException
 import com.example.patient.repository.DoctorRepository
 import org.springframework.http.HttpStatus
@@ -16,12 +16,12 @@ import java.util.*
 class DoctorController(
     private val doctorRepository: DoctorRepository
 ) {
-    @ExceptionHandler(IdNotFoundException::class)
-    fun wrongDoctorId(idNotFoundException: IdNotFoundException): ResponseEntity<GlobalErrorResponse> {
+    @ExceptionHandler(PersonNotFoundException::class)
+    fun wrongDoctorId(personNotFoundException: PersonNotFoundException): ResponseEntity<GlobalErrorResponse> {
         return ResponseEntity(
             GlobalErrorResponse(
                 HttpStatus.BAD_REQUEST,
-                idNotFoundException.message
+                personNotFoundException.message
             ),
             HttpStatus.BAD_REQUEST
         )
@@ -51,7 +51,7 @@ class DoctorController(
         try {
             doctor!!
         } catch (nullPointerException: NullPointerException) {
-            throw IdNotFoundException("No patient with id $id")
+            throw PersonNotFoundException("No patient with id $id")
         }
         return ResponseEntity.ok(doctor)
     }

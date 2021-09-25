@@ -3,6 +3,7 @@ package com.example.patient.service
 import com.example.patient.dto.PatientRequestDTO
 import com.example.patient.entity.Doctor
 import com.example.patient.entity.Patient
+import com.example.patient.exception.PersonNotFoundException
 import com.example.patient.repository.DoctorRepository
 import com.example.patient.repository.PatientRepository
 import org.springframework.stereotype.Service
@@ -20,7 +21,8 @@ class PatientAddDoctorService(
     }
 
     private fun selectDoctor(): Doctor {
-        val doctor = doctorRepository.findAll().minByOrNull { it.patientNumber }!!
+        val doctor = doctorRepository.findAll().minByOrNull { it.patientNumber }
+            ?: throw PersonNotFoundException("No available doctor")
         doctor.patientNumber++
         doctor.modifiedDate = LocalDateTime.now()
         doctorRepository.save(doctor)
