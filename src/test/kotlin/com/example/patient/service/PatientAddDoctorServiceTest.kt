@@ -3,6 +3,7 @@ package com.example.patient.service
 import com.example.patient.dto.PatientRequestDTO
 import com.example.patient.entity.Doctor
 import com.example.patient.entity.Patient
+import com.example.patient.exception.PersonNotFoundException
 import com.example.patient.repository.DoctorRepository
 import com.example.patient.repository.PatientRepository
 import com.ninjasquad.springmockk.MockkBean
@@ -10,6 +11,7 @@ import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
@@ -68,6 +70,16 @@ internal class PatientAddDoctorServiceTest {
         assertThat(patientResult.doctor).isEqualTo(fakeDoctor1)
         assertThat(fakeDoctor1.patientNumber).isEqualTo(2)
 
+    }
+
+    @Test
+    fun `should throw when there is no doctor exists`() {
+        every {
+            doctorRepository.findAll()
+        } returns listOf()
+        assertThrows<PersonNotFoundException> {
+            patientAddDoctorService.addDoctor(fakePatientRequest)
+        }
     }
 
 
